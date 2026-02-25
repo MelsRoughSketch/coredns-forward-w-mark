@@ -64,6 +64,8 @@ type Forward struct {
 	tapPlugins []*dnstap.Dnstap // when dnstap plugins are loaded, we use to this to send messages out.
 
 	Next plugin.Handler
+
+	fwmark                    int
 }
 
 // New returns a new Forward.

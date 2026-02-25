@@ -83,12 +83,17 @@ func (t *Transport) Dial(proto string) (*persistConn, bool, error) {
 
 	reqTime := time.Now()
 	timeout := t.dialTimeout()
-	if proto == "tcp-tls" {
-		conn, err := dns.DialTimeoutWithTLS("tcp", t.addr, t.tlsConfig, timeout)
-		t.updateDialTimeout(time.Since(reqTime))
-		return &persistConn{c: conn}, false, err
+	dialer := t.NewDieler(timeout)
+
+	var client dns.Client
+
+	switch proto {
+	case "tcp-tls":
+		client = dns.Client{Net: proto, Dialer: dialer, TLSConfig: t.tlsConfig}
+	default:
+		client = dns.Client{Net: proto, Dialer: dialer}
 	}
-	conn, err := dns.DialTimeout(proto, t.addr, timeout)
+	conn, err := client.Dial(t.addr)
 	t.updateDialTimeout(time.Since(reqTime))
 	return &persistConn{c: conn}, false, err
 }
@@ -202,4 +207,8 @@ func truncateResponse(response *dns.Msg) *dns.Msg {
 	// Set TC bit to indicate truncation.
 	response.Truncated = true
 	return response
+}
+
+func NewFwmarkDialer() {
+
 }

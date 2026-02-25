@@ -2,8 +2,10 @@ package proxy
 
 import (
 	"crypto/tls"
+	"net"
 	"sort"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/miekg/dns"
@@ -27,6 +29,8 @@ type Transport struct {
 
 	mu   sync.Mutex
 	stop chan struct{}
+
+	DialControl func(network, address string, c syscall.RawConn) error
 }
 
 func newTransport(proxyName, addr string) *Transport {
@@ -139,6 +143,18 @@ func (t *Transport) SetTLSConfig(cfg *tls.Config) { t.tlsConfig = cfg }
 
 // GetTLSConfig returns the TLS config in transport.
 func (t *Transport) GetTLSConfig() *tls.Config { return t.tlsConfig }
+
+// SetDialControl sets Control of Dialer.
+func (t *Transport) SetDialControl(fn func(network, addr string, c syscall.RawConn) error) { 
+	t.DialControl = fn
+}
+
+func (t *Transport) NewDieler(timeout time.Duration) *net.Dialer {
+	return &net.Dialer{
+		Timeout: timeout,
+		Control: t.DialControl,
+	}
+}
 
 const (
 	defaultExpire  = 10 * time.Second

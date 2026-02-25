@@ -198,6 +198,7 @@ func parseStanza(c *caddy.Controller) (*Forward, error) {
 		f.proxies[i].SetExpire(f.expire)
 		f.proxies[i].SetMaxIdleConns(f.maxIdleConns)
 		f.proxies[i].GetHealthchecker().SetRecursionDesired(f.opts.HCRecursionDesired)
+		f.proxies[i].SetFwmark(f.fwmark)
 		// when TLS is used, checks are set to tcp-tls
 		if f.opts.ForceTCP && transports[i] != transport.TLS {
 			f.proxies[i].GetHealthchecker().SetTCPTransport()
@@ -338,6 +339,18 @@ func parseBlock(c *caddy.Controller, f *Forward) error {
 		default:
 			return c.Errf("unknown policy '%s'", x)
 		}
+	case "fwmark":
+		if !c.NextArg() {
+			return c.ArgErr()
+		}
+		n, err := strconv.Atoi(c.Val())
+		if err != nil {
+			return err
+		}
+		if n < 0 {
+			return fmt.Errorf("fwmark can't be negative: %d", n)
+		}
+		f.fwmark = int(n)
 	case "max_concurrent":
 		if !c.NextArg() {
 			return c.ArgErr()

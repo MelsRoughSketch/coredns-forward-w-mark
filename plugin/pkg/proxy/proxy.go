@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"runtime"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/coredns/coredns/plugin/pkg/log"
@@ -55,6 +56,19 @@ func (p *Proxy) SetExpire(expire time.Duration) { p.transport.SetExpire(expire) 
 // SetMaxIdleConns sets the maximum idle connections per transport type.
 // A value of 0 means unlimited (default).
 func (p *Proxy) SetMaxIdleConns(n int) { p.transport.SetMaxIdleConns(n) }
+
+// SetFwmark sets fwmark to query packets.
+func (p *Proxy) SetFwmark(n int) {
+	if n != 0 {
+		p.transport.SetDialControl(func(network, address string, c syscall.RawConn) error {
+			return c.Control(func(fd uintptr) {
+				syscall.SetsockoptInt(int(fd), syscall.SOL_SOCKET, syscall.SO_MARK, n)
+			})
+		})
+	} else {
+		p.transport.SetDialControl(nil)
+	}
+}
 
 func (p *Proxy) GetHealthchecker() HealthChecker {
 	return p.health
