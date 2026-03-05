@@ -83,6 +83,9 @@ func (t *Transport) Dial(proto string) (*persistConn, bool, error) {
 
 	reqTime := time.Now()
 	timeout := t.dialTimeout()
+
+	// FIXME: 2026-02-25 Modified by MelsRoughSketch
+	// Purpose: support for fwmark forward plugin
 	dialer := t.NewDieler(timeout)
 
 	var client dns.Client
@@ -207,8 +210,4 @@ func truncateResponse(response *dns.Msg) *dns.Msg {
 	// Set TC bit to indicate truncation.
 	response.Truncated = true
 	return response
-}
-
-func NewFwmarkDialer() {
-
 }

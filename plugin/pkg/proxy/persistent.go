@@ -30,6 +30,8 @@ type Transport struct {
 	mu   sync.Mutex
 	stop chan struct{}
 
+	// FIXME: 2026-02-25 Modified by MelsRoughSketch
+	// Purpose: support for fwmark forward plugin
 	DialControl func(network, address string, c syscall.RawConn) error
 }
 
@@ -145,7 +147,10 @@ func (t *Transport) SetTLSConfig(cfg *tls.Config) { t.tlsConfig = cfg }
 func (t *Transport) GetTLSConfig() *tls.Config { return t.tlsConfig }
 
 // SetDialControl sets Control of Dialer.
-func (t *Transport) SetDialControl(fn func(network, addr string, c syscall.RawConn) error) { 
+//
+// FIXME: 2026-02-25 Modified by MelsRoughSketch
+// Purpose: support for fwmark forward plugin
+func (t *Transport) SetDialControl(fn func(network, addr string, c syscall.RawConn) error) {
 	t.DialControl = fn
 }
 

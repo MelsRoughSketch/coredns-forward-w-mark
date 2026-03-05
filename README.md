@@ -1,7 +1,9 @@
 # What is this
 This fork enables the Dial function used by the forward plugin to be executed within a custom Dialer.
 
-**Note: This version is modified and unsupported by the original authors. Do not contact the original project regarding issues with this fork.**
+**Note: This version is modified and unsupported by the original authors. Do not contact the original project regarding issues with this fork.**<br>
+All changes following the original commit `3d31397fe65d44f407fa4a1529b1695f10a47c4d` are modifications by [MelsRoughsketch](https://github.com/MelsRoughSketch).
+
 
 
 ## Change

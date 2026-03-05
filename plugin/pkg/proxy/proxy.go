@@ -58,6 +58,9 @@ func (p *Proxy) SetExpire(expire time.Duration) { p.transport.SetExpire(expire) 
 func (p *Proxy) SetMaxIdleConns(n int) { p.transport.SetMaxIdleConns(n) }
 
 // SetFwmark sets fwmark to query packets.
+//
+// FIXME: 2026-02-25 Modified by MelsRoughSketch
+// Purpose: support for fwmark forward plugin
 func (p *Proxy) SetFwmark(n int) {
 	if n != 0 {
 		p.transport.SetDialControl(func(network, address string, c syscall.RawConn) error {

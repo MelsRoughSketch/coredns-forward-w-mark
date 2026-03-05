@@ -65,7 +65,10 @@ type Forward struct {
 
 	Next plugin.Handler
 
-	fwmark                    int
+	// FIXME: 2026-02-25 Modified by MelsRoughSketch
+	// Purpose: support for fwmark forward plugin
+	// Note: zdirectives.go and zplugins.go were also modified during the build
+	fwmark int
 }
 
 // New returns a new Forward.
