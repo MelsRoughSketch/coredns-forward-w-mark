@@ -1,6 +1,9 @@
 # What is this
 This fork enables the Dial function used by the forward plugin to be executed within a custom Dialer.
 
+**Note: This version is modified and unsupported by the original authors. Do not contact the original project regarding issues with this fork.**
+
+
 ## Change
 The following has been added to the *forward* plugin syntax:
 ```txt
